@@ -110,7 +110,7 @@ def render() -> None:
     m = data.model()
     ref = data.reference()
     ui.header(
-        "Credit card churn · XGBoost model",
+        "Bank Churn Radar · XGBoost model",
         "Will this customer close their card?",
         f"Enter a customer's profile and card activity. The model, trained on {m.meta['train_rows']:,} customers, gives the "
         f"<b>probability that they churn</b>, flags them for the retention team at <b>{m.threshold:.0%} or more</b>, "

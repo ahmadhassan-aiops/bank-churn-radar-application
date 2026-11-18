@@ -1,6 +1,6 @@
-# Credit card churn prediction
+# Bank Churn Radar: credit card churn prediction application
 
-**Live app:** [bank-churn-prediction.streamlit.app](https://bank-churn-prediction.streamlit.app/) · **Notebook and project folder:** [AIOPS-Portfolio-Projects](https://github.com/ahmadhassan-aiops/AIOPS-Portfolio-Projects/tree/main/2.%20Machine%20Learning%20Projects/Bank%20churners%20project)
+**Live app:** [bank-churn-radar-application.streamlit.app](https://bank-churn-radar-application.streamlit.app/) · **Notebook and project folder:** [AIOPS-Portfolio-Projects](https://github.com/ahmadhassan-aiops/AIOPS-Portfolio-Projects/tree/main/2.%20Machine%20Learning%20Projects/Bank%20churners%20project)
 
 A churn model for a bank's credit card customers, by **Ahmad Hassan** (AI Engineer), served as an interactive tool
 for a retention team. A tuned XGBoost pipeline, trained on 8,101 customers and tested once on 2,026 it never saw,

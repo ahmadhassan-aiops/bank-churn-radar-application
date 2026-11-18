@@ -6,7 +6,7 @@ NOTEBOOK_URL = (
     "https://github.com/ahmadhassan-aiops/AIOPS-Portfolio-Projects/blob/main/2.%20Machine%20Learning%20Projects/"
     "Bank%20churners%20project/bank%20churners.ipynb"
 )
-CODE_URL = "https://github.com/ahmadhassan-aiops/bank-churn-prediction"
+CODE_URL = "https://github.com/ahmadhassan-aiops/bank-churn-radar-application"
 LEARN_URL = "https://learn.ahmadhassanrx.com"
 DATA_CREDIT = (
     "Data: the public Credit Card Customers dataset (10,127 anonymised customers); Thera Bank is the case-study "

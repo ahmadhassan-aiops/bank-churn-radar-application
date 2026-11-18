@@ -6,7 +6,7 @@ The trained pipeline ships in model/ (built by train.py); the inference code is 
 import streamlit as st
 
 st.set_page_config(
-    page_title="Credit card churn prediction | Ahmad Hassan",
+    page_title="Bank Churn Radar | Ahmad Hassan",
     page_icon=":material/credit_card:",
     layout="wide",
     initial_sidebar_state="collapsed",
