@@ -1,4 +1,4 @@
-"""Data & method: the dataset, how the model was chosen, what was corrected, and the limits."""
+"""Data & method: the dataset, how the model was chosen, and the limits."""
 
 from __future__ import annotations
 
@@ -25,8 +25,7 @@ def render() -> None:
     ui.header(
         "Data & method",
         "How the model was built",
-        "The dataset, the modelling choices and their reasons, the corrections made to the first version of the "
-        "notebook, and what the model cannot know.",
+        "The dataset, the modelling choices and their reasons, and what the model cannot know.",
         page_icon="dataset",
         chips=[("table_rows", "10,127 customers"), ("science", "25 candidate models"),
                ("tune", "Tuned with 5-fold CV"), ("lock", "Test set used once")],
@@ -61,17 +60,6 @@ def render() -> None:
     st.dataframe(pd.DataFrame(TUNED).set_index("Model"), column_config={
         c: st.column_config.NumberColumn(format="%.3f") for c in ("Recall", "Precision", "F2", "PR-AUC")})
     ui.cap("Tuned models, 5-fold cross-validation on the training set, at the default 0.5 threshold.")
-
-    ui.section("Corrections to the first version")
-    ui.note(
-        "<b>1. The target was the wrong way round.</b> <code>pd.get_dummies(y, drop_first=True)</code> kept "
-        "\"Existing Customer\" as the positive class, so every recall figure measured how well the model found "
-        "customers who <i>stay</i>.<br><b>2. The test set was used for training.</b> The final model was refitted "
-        "on the test data and then scored on the same data.<br><b>3. Unknown values were filled with the most "
-        "common value</b>, and resampling happened before cross-validation, which leaks synthetic rows into the "
-        "validation folds.<br>Together these produced a reported recall of 1.0 for a model that caught 12.6% of "
-        "churners. Several EDA observations were also corrected against the data."
-    )
 
     ui.section("Limits")
     st.markdown(

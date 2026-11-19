@@ -36,10 +36,9 @@ def render() -> None:
     c[3].metric("ROC-AUC", f"{tst['ROC-AUC']:.3f}")
 
     ui.note(
-        "<b>Correction to the first version of the notebook.</b> It reported a perfect recall of 1.0, but its target "
-        "encoding made <i>staying</i> the positive class, and the final model was refitted on the test set before "
-        "being scored on it. Measured properly, that model caught only <b>12.6% of churners</b>. The rebuilt notebook "
-        f"fixes both, and this model catches <b>{tst['Recall']:.0%}</b>."
+        f"<b>The model finds {tst['Recall']:.0%} of the customers who closed their card, and {tst['Precision']:.0%} of "
+        "the customers it flags really did.</b> Churners are the positive class, the threshold was set on "
+        "cross-validated predictions, and the test customers were used for nothing but this final score."
     )
 
     ui.section("Choose the trade-off", "How many calls does it take to reach how many churners?")

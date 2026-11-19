@@ -13,8 +13,7 @@ for a retention team. A tuned XGBoost pipeline, trained on 8,101 customers and t
 - **Score a customer list**: upload a CSV (or use the test set), rank customers by risk, choose how many to
   call, and download the scored list.
 - **Model performance**: test-set results, an interactive threshold trade-off, calibration and feature importance.
-- **Data & method**: how the model was chosen, the corrections made to the first version of the notebook,
-  and the model's limits.
+- **Data & method**: how the model was chosen and the model's limits.
 
 ## Why this stack
 
