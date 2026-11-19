@@ -136,6 +136,61 @@ div[data-testid="stColumn"] [data-testid="stMetric"] { background: linear-gradie
 .result-text b { color: var(--ink); }
 .derived { display: flex; gap: .5rem; flex-wrap: wrap; margin: .2rem 0 0; }
 
+/* Result panels: numbered heads, risk ladder, driver rows, action cards */
+.panel-head { display: flex; gap: .7rem; align-items: center; margin: 0 0 .35rem; }
+.panel-num { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--ink); color: #fff; font-weight: 750;
+             display: grid; place-items: center; font-size: .9rem; }
+.panel-title { font-weight: 750; font-size: 1.1rem; color: var(--ink); margin: 0; line-height: 1.2; }
+.panel-sub { color: var(--muted); font-size: .84rem; margin: .1rem 0 0; line-height: 1.35; }
+.score-top { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: .1rem 0 .3rem; }
+.verdict-text { color: var(--ink-2); font-size: .95rem; line-height: 1.55; margin: .1rem 0 .75rem; }
+.verdict-text b { color: var(--ink); }
+.ladder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; margin: 0 0 .7rem; }
+.rung { border-radius: 10px; padding: .45rem .6rem; border: 1px solid var(--line); background: #fff; opacity: .6; }
+.rung.on { opacity: 1; border: 2px solid var(--band); background: var(--band-soft); }
+.rung-name { display: flex; align-items: center; gap: .3rem; font-weight: 750; font-size: .82rem; color: var(--band-ink); margin: 0; }
+.rung-name .msr { font-size: 17px; }
+.rung-range { font-size: .76rem; color: var(--ink-2); margin: .1rem 0 0; }
+.facts { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.drv-legend { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: .75rem; font-size: .72rem;
+              font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: .4rem 0 .15rem; }
+.drv-legend .ends { display: flex; justify-content: space-between; }
+.drv-legend .lo { color: var(--accent-ink); }
+.drv-legend .hi { color: #a32b20; }
+.drv { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: .75rem; align-items: center;
+       padding: .55rem 0; border-top: 1px dashed var(--line); }
+.drv-name { display: flex; gap: .35rem; align-items: center; font-weight: 650; color: var(--ink); font-size: .92rem;
+            line-height: 1.3; margin: 0; }
+.drv-name .msr { font-size: 18px; flex: none; }
+.drv.up .drv-name .msr { color: #a32b20; }
+.drv.down .drv-name .msr { color: var(--accent-ink); }
+.drv-meta { color: var(--muted); font-size: .8rem; margin: .15rem 0 0 1.45rem; line-height: 1.35; }
+.drv-meta b { color: var(--ink); font-weight: 700; }
+.drv-track { position: relative; height: 16px; border-radius: 4px; background: #f3f2ee; }
+.drv-track::after { content: ""; position: absolute; left: calc(50% - 1px); top: -3px; bottom: -3px; width: 2px;
+                    background: var(--ink-2); }
+.drv-bar { position: absolute; top: 2px; bottom: 2px; border-radius: 4px; width: calc(var(--w) * 50%); min-width: 4px; }
+.drv.up .drv-bar { left: 50%; background: #c4382b; }
+.drv.down .drv-bar { right: 50%; background: var(--accent); }
+.drv-str { font-size: .72rem; color: var(--ink-2); margin: .2rem 0 0; font-weight: 600; }
+.drv.up .drv-str { text-align: right; }
+.drv.down .drv-str { text-align: left; }
+
+.acts { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: .8rem; margin: .4rem 0 .2rem; }
+@media (max-width: 900px) { .acts { grid-template-columns: 1fr; } }
+.act { display: flex; gap: .8rem; align-items: flex-start; background: #fff; border: 1px solid var(--line);
+       border-top: 4px solid var(--accent); border-radius: 12px; padding: .9rem 1rem; }
+.act-icon { flex: none; width: 42px; height: 42px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-ink);
+            border: 1px solid var(--accent-tint); display: grid; place-items: center; }
+.act-icon .msr { font-size: 24px; }
+.act-tag { font-size: .7rem; font-weight: 750; text-transform: uppercase; letter-spacing: .07em; color: var(--accent-ink); margin: 0; }
+.act-title { font-weight: 720; color: var(--ink); font-size: 1rem; margin: .1rem 0 .3rem; }
+.act-why { display: inline-flex; align-items: center; gap: .25rem; font-size: .8rem; color: var(--ink-2); background: #fbeceb;
+           border-radius: 6px; padding: .15rem .5rem; margin: 0 0 .4rem; }
+.act-why .msr { font-size: 15px; color: #a32b20; }
+.act-text { color: var(--ink-2); font-size: .92rem; line-height: 1.55; margin: 0; }
+
 .footer { display: flex; gap: .9rem; align-items: center; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line);
           padding-top: 1.1rem; margin-top: 2.75rem; }
 .footer-av { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 750;
@@ -292,3 +347,63 @@ def chips(items: list[tuple[str, str]]) -> None:
     """A row of small (icon, label) chips."""
     st.html('<div class="chips derived">' + "".join(
         f'<span class="chip">{icon(i)}{html.escape(t)}</span>' for i, t in items) + "</div>")
+
+
+def panel_head(n: int, title: str, sub: str) -> None:
+    """Numbered heading for the result panels."""
+    st.html(f'<div class="panel-head"><span class="panel-num">{n}</span><div><p class="panel-title">'
+            f'{html.escape(title)}</p><p class="panel-sub">{sub}</p></div></div>')
+
+
+def _band_style(band: str) -> str:
+    r = theme.RISK[band]
+    return f"--band:{r['color']};--band-ink:{r['ink']};--band-soft:{r['soft']}"
+
+
+def band_pill(band: str) -> str:
+    r = theme.RISK[band]
+    return f'<span class="band" style="{_band_style(band)}">{icon(r["icon"])}{html.escape(r["label"])}</span>'
+
+
+def verdict(band: str, text: str, rungs: list[tuple[str, str]], facts: list[tuple[str, str]]) -> None:
+    """Band pill, the verdict sentence, the three-step risk ladder (current step highlighted) and fact chips."""
+    ladder = "".join(
+        f'<div class="rung{" on" if name == band else ""}" style="{_band_style(name)}"><p class="rung-name">'
+        f'{icon(theme.RISK[name]["icon"])}{html.escape(theme.RISK[name]["label"])}</p>'
+        f'<p class="rung-range">{html.escape(rng)}</p></div>'
+        for name, rng in rungs)
+    chips_html = "".join(f'<span class="chip">{icon(i)}{html.escape(t)}</span>' for i, t in facts)
+    st.html(f'<div class="score-top">{band_pill(band)}</div><p class="verdict-text">{text}</p>'
+            f'<div class="ladder">{ladder}</div><div class="facts">{chips_html}</div>')
+
+
+def drivers(rows: list[dict]) -> None:
+    """Driver rows: name, this customer's value against a typical customer, and a diverging bar.
+
+    Each row: {"name", "value", "typical" (or ""), "shap"}. Bar length is relative to the largest |shap|.
+    """
+    biggest = max(abs(r["shap"]) for r in rows) or 1
+    out = ['<div class="drv-legend"><span>Factor</span><span class="ends"><span class="lo">&#9664; lowers risk</span>'
+           '<span class="hi">raises risk &#9654;</span></span></div>']
+    for r in rows:
+        up = r["shap"] > 0
+        size = abs(r["shap"])
+        strength = "strong" if size >= 1 else "moderate" if size >= 0.4 else "slight"
+        typical = f' · typical stayer <b>{html.escape(r["typical"])}</b>' if r["typical"] else ""
+        out.append(
+            f'<div class="drv {"up" if up else "down"}"><div><p class="drv-name">'
+            f'{icon("arrow_upward" if up else "arrow_downward")}{html.escape(r["name"])}</p>'
+            f'<p class="drv-meta">This customer <b>{html.escape(r["value"])}</b>{typical}</p></div>'
+            f'<div><div class="drv-track"><div class="drv-bar" style="--w:{size / biggest:.3f}"></div></div>'
+            f'<p class="drv-str">{strength}, {"raises" if up else "lowers"} risk</p></div></div>')
+    st.html("".join(out))
+
+
+def action_cards(items: list[tuple[str, str, str, str]]) -> None:
+    """Priority action cards. Each item is (icon, title, why, text); `why` names the driver it answers."""
+    st.html(f'<div class="acts" style="--n:{max(len(items), 2)}">' + "".join(
+        f'<div class="act"><div class="act-icon">{icon(i)}</div><div><p class="act-tag">Priority {n}</p>'
+        f'<p class="act-title">{html.escape(t)}</p>'
+        + (f'<p class="act-why">{icon("arrow_upward")}{html.escape(w)}</p>' if w else "")
+        + f'<p class="act-text">{html.escape(x)}</p></div></div>'
+        for n, (i, t, w, x) in enumerate(items, 1)) + "</div>")

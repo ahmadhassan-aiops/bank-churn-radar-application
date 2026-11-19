@@ -95,3 +95,10 @@ def test_actions_follow_the_drivers():
     balance = pd.Series({"Total_Revolving_Bal": 0.8})
     assert actions.suggest(balance, pd.Series({"Total_Revolving_Bal": 0}))[0][1] == "Make the card worth keeping"
     assert actions.suggest(balance, pd.Series({"Total_Revolving_Bal": 2517}))[0] == actions.HIGH_BALANCE
+
+
+def test_actions_only_when_the_situation_fits():
+    # high spend that still raises the score (an interaction) must not get the "spend is low" action
+    spend = pd.Series({"Total_Trans_Amt": 0.9})
+    assert actions.suggest(spend, pd.Series({"Total_Trans_Amt": 9441}))[0] == actions.FALLBACK
+    assert actions.suggest(spend, pd.Series({"Total_Trans_Amt": 1500}))[0][1] == "Grow spend on the card"

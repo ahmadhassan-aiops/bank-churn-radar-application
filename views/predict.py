@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import html
-
 import streamlit as st
 from pydantic import ValidationError
 
 from churn import actions
 from churn.model import to_prob
 from churn.schema import CARDS, EDUCATION, GENDERS, INCOME, LABELS, MARITAL, Customer
-from lib import charts, data, ui
+from lib import charts, data, theme, ui
 
 DEFAULTS = {  # the typical (median / most common) customer in the training data
     "Customer_Age": 46, "Gender": "F", "Dependent_count": 2, "Education_Level": "Graduate",
@@ -144,43 +142,55 @@ def render() -> None:
         contrib, bias = m.explain(row)
         contrib = contrib.iloc[0]
 
+        t = m.threshold
+        share_below = float((data.test_set()["proba"] < p).mean())
         if band == "Flag":
-            riskier = float((data.test_set()["proba"] > p).mean())
-            text = (f"<b>Call this customer.</b> Their score is higher than {1 - riskier:.0%} of the bank's customers. "
-                    "A retention call costs little next to a lost card.")
+            text = (f"<b>Call this customer.</b> Their score is higher than {share_below:.0%} of the bank's "
+                    "customers. A retention call costs little next to a lost card.")
         elif band == "Watch":
-            text = ("<b>Below the flag threshold, but worth watching.</b> Re-score after next quarter's activity.")
+            text = "<b>Below the call threshold, but worth watching.</b> Re-score after next quarter's activity."
         else:
-            text = "<b>Unlikely to churn.</b> No retention action needed now."
-        ui.result_card(p, band, m.threshold, text)
-        ui.chips([("account_balance_wallet", f"Credit still available ${customer.open_to_buy:,.0f}"),
-                  ("percent", f"Utilisation {customer.utilisation:.0%}")])
+            text = "<b>Unlikely to churn.</b> No retention action is needed now."
+        row0 = row.iloc[0]
+        stay = ref["median_stayed"]
 
-        st.subheader("Why this score", anchor=False)
-        top = contrib.reindex(contrib.abs().sort_values(ascending=False).index)[:8]
-        stay, churn = ref["median_stayed"], ref["median_churned"]
-        details = []
-        for col in top.index:
-            x = row.iloc[0][col]
-            if col in stay:
-                details.append(f"This customer: {_value(col, x)} · typical stayer {_value(col, stay[col])} "
-                               f"· typical churner {_value(col, churn[col])}")
-            else:
-                details.append(f"This customer: {_value(col, x)}")
-        labels = [f"{LABELS[c]}: {_value(c, row.iloc[0][c])}" for c in top.index]
-        ui.chart(charts.drivers(labels, top.round(3).tolist(), details), key="drivers")
-        ui.cap(f"Each bar is the feature's SHAP contribution for this customer. Starting from the model's baseline "
-               f"({to_prob(float(bias[0])):.0%}), the bars add up to this customer's score. "
-               "Hover a bar to compare with typical customers.")
+        # 1. Risk score
+        with st.container(border=True):
+            ui.panel_head(1, "Risk score", f"Probability that this customer closes their card · calls start at "
+                                           f"{t:.0%}")
+            ui.chart(charts.gauge(p, t, theme.RISK[band]["color"], ui.pct(p).replace("&lt;", "<")
+                                  .replace("&gt;", ">")), key="gauge")
+            ui.verdict(band, text,
+                       [("Low", f"under {t / 2:.1%}"), ("Watch", f"{t / 2:.1%} to {t:.0%}"), ("Flag", f"{t:.0%} or more")],
+                       [("account_balance_wallet", f"Credit available ${customer.open_to_buy:,.0f}"),
+                        ("percent", f"Utilisation {customer.utilisation:.0%}"),
+                        ("leaderboard", f"Riskier than {share_below:.0%} of customers")])
 
-        st.subheader("What to do", anchor=False)
-        items = actions.suggest(contrib, row.iloc[0])
-        st.html('<div class="recs" style="--n:1">' + "".join(
-            f'<div class="rec"><div class="rec-head"><span class="rec-num">{n}</span>'
-            f'<span class="msr rec-icon" aria-hidden="true">{html.escape(i)}</span></div>'
-            f'<p class="rec-title">{html.escape(t)}</p><p class="rec-text">{html.escape(x)}</p></div>'
-            for n, (i, t, x) in enumerate(items, 1)) + "</div>")
-        if band == "Low":
-            ui.cap("The actions address what raises this customer's risk most, even though it is low overall.")
+        # 2. What drives it
+        with st.container(border=True):
+            ui.panel_head(2, "What drives the score",
+                          "The six facts that move this customer's score most, compared with a typical customer "
+                          "who stayed")
+            top = contrib.reindex(contrib.abs().sort_values(ascending=False).index)[:6]
+            ui.drivers([{"name": LABELS[c], "value": _value(c, row0[c]),
+                         "typical": _value(c, stay[c]) if c in stay else "", "shap": float(v)}
+                        for c, v in top.items()])
+            ui.cap(f"Bar length is the factor's SHAP contribution, relative to the strongest. Starting from the "
+                   f"model's baseline ({to_prob(float(bias[0])):.0%}), all contributions add up to this score. Factors interact, so the same value can push "
+                   "differently for different customers.")
+
+    # 3. What to do (full width, under the form and the score)
+    with st.container(border=True):
+        ui.panel_head(3, "What to do", "Retention actions for the factors that raise this customer's risk"
+                      if band != "Low" else "Risk is low; these address the factors that raise it most")
+        items = []
+        for feature, (i, title, body) in actions.plan(contrib, row0):
+            why = ""
+            if feature:
+                why = f"{LABELS[feature]}: {_value(feature, row0[feature])}"
+                if feature in stay:
+                    why += f" (typical stayer {_value(feature, stay[feature])})"
+            items.append((i, title, why, body))
+        ui.action_cards(items)
 
     ui.footer()

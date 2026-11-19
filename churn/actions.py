@@ -79,25 +79,52 @@ HIGH_BALANCE = (
 )
 
 
+# Each playbook text describes a situation ("spend is low", "many contacts"). It is only shown when the customer's
+# value really is in that situation; otherwise the feature raises the score through an interaction with other
+# values, and the text would be wrong for this customer. Thresholds are around the typical (median) stayer.
+APPLIES = {
+    "Total_Trans_Ct": lambda v: v < 71,
+    "Total_Trans_Amt": lambda v: v < 4100,
+    "Total_Ct_Chng_Q4_Q1": lambda v: v < 1,
+    "Total_Amt_Chng_Q4_Q1": lambda v: v < 1,
+    "Total_Revolving_Bal": lambda v: v < 500,
+    "Avg_Utilization_Ratio": lambda v: v < 0.1,
+    "Total_Relationship_Count": lambda v: v <= 3,
+    "Contacts_Count_12_mon": lambda v: v >= 3,
+    "Months_Inactive_12_mon": lambda v: v >= 3,
+}
+
+
 def _action(feature: str, customer: pd.Series | None) -> tuple[str, str, str] | None:
-    """The playbook entry, adjusted where the right action depends on the customer's actual value."""
-    if customer is not None and feature in ("Total_Revolving_Bal", "Avg_Utilization_Ratio"):
-        if customer.get("Total_Revolving_Bal", 0) >= 2000:
-            return HIGH_BALANCE
+    """The playbook entry if it fits this customer's actual value (always, when no customer is given)."""
+    if customer is None:
+        return PLAYBOOK.get(feature)
+    if feature in ("Total_Revolving_Bal", "Avg_Utilization_Ratio") and customer.get("Total_Revolving_Bal", 0) >= 2000:
+        return HIGH_BALANCE
+    check = APPLIES.get(feature)
+    if check is not None and feature in customer and not check(customer[feature]):
+        return None
     return PLAYBOOK.get(feature)
 
 
-def suggest(contributions: pd.Series, customer: pd.Series | None = None, limit: int = 3) -> list[tuple[str, str, str]]:
-    """Actions for the features that raise this customer's churn score most (one per distinct action).
+def plan(contributions: pd.Series, customer: pd.Series | None = None,
+         limit: int = 3) -> list[tuple[str | None, tuple[str, str, str]]]:
+    """(feature, action) pairs for the features that raise the churn score most, one per distinct action.
 
     `customer` (the model row) lets an action depend on the value, e.g. a zero balance versus one at the cap.
+    The feature is None for the fallback action.
     """
-    actions, seen = [], set()
+    out, seen = [], set()
     for feature, value in contributions.sort_values(ascending=False).items():
-        if value <= 0.25 or len(actions) == limit:  # ignore features that barely raise the score
+        if value <= 0.25 or len(out) == limit:  # ignore features that barely raise the score
             break
         action = _action(feature, customer)
         if action and action[1] not in seen:
             seen.add(action[1])
-            actions.append(action)
-    return actions or [FALLBACK]
+            out.append((feature, action))
+    return out or [(None, FALLBACK)]
+
+
+def suggest(contributions: pd.Series, customer: pd.Series | None = None, limit: int = 3) -> list[tuple[str, str, str]]:
+    """The actions alone (see plan)."""
+    return [action for _, action in plan(contributions, customer, limit)]

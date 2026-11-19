@@ -152,3 +152,29 @@ def calibration(predicted: list[float], observed: list[float], counts: list[int]
                      gridcolor=GRID)
     fig.update_yaxes(title="Share that actually churned", tickformat=".0%", range=[0, 1])
     return fig
+
+
+def gauge(p: float, threshold: float, color: str, label: str) -> go.Figure:
+    """Half-circle gauge of the churn probability: Low / Watch / Flag zones, threshold marked, number in the middle."""
+    fig = go.Figure(go.Indicator(
+        mode="gauge", value=p * 100,
+        gauge=dict(
+            shape="angular",
+            axis=dict(range=[0, 100], tickvals=[0, threshold * 100, 50, 100],
+                      ticktext=["0%", f"{threshold:.0%}", "50%", "100%"], tickfont=dict(size=12, color=INK_2),
+                      tickwidth=1, tickcolor=AXIS),
+            bar=dict(color=color, thickness=0.32),
+            bgcolor=SURFACE, borderwidth=0,
+            steps=[dict(range=[0, threshold * 50], color="#e9f5ee"),
+                   dict(range=[threshold * 50, threshold * 100], color="#fdf6e7"),
+                   dict(range=[threshold * 100, 100], color="#fbeceb")],
+            threshold=dict(line=dict(color=INK, width=3), thickness=0.9, value=threshold * 100),
+        ),
+        domain=dict(x=[0, 1], y=[0, 1]),
+    ))
+    fig.add_annotation(x=0.5, y=0.1, xref="paper", yref="paper", text=f"<b>{label}</b>", showarrow=False,
+                       font=dict(size=40, color=INK, family=FONT))
+    fig.add_annotation(x=0.5, y=-0.08, xref="paper", yref="paper", text="chance of churn", showarrow=False,
+                       font=dict(size=13, color=INK_2, family=FONT))
+    fig.update_layout(height=230, margin=dict(l=40, r=44, t=18, b=24), paper_bgcolor=SURFACE, font=dict(family=FONT))
+    return fig
