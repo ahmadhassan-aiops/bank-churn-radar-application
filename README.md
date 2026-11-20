@@ -7,13 +7,18 @@ for a retention team. A tuned XGBoost pipeline, trained on 8,101 customers and t
 **catches 94% of the customers who close their card, and 84% of the customers it flags really do churn**
 (PR-AUC 0.968).
 
-- **Score a customer**: enter a profile and 12 months of card activity; get the churn probability, a
-  risk band, the SHAP explanation of what drives the score, and retention actions matched to those drivers.
-  Updates live as you change any field.
-- **Score a customer list**: upload a CSV (or use the test set), rank customers by risk, choose how many to
-  call, and download the scored list.
-- **Model performance**: test-set results, an interactive threshold trade-off, calibration and feature importance.
-- **Data & method**: how the model was chosen and the model's limits.
+The app is a light **retention radar console**: customers are blips on a radar scope (closer to the centre = more
+likely to churn, bearing = card transactions), lists become flight-strip style boards, and every block sits in its own
+bracketed console module.
+
+- **Track a customer**: enter a profile and 12 months of card activity; see the customer on the scope among the
+  held-out customers, the churn probability with its Clear / Watch / Call state, the signals (SHAP values) that drive
+  the score next to a typical stayer, and retention orders matched to those signals. Updates live.
+- **Strip board**: score a CSV (or the held-out customers), set the call line, see the whole list on the scope, and
+  work the call, watch and clear bays of customer strips; download the ranked list.
+- **Calibration**: held-out results, the call line per 1,000 customers with a reached / missed / extra-call grid, the
+  recall-precision trade-off, calibration and what drives the scores.
+- **Manual**: the data, how the model was chosen, limits and code.
 
 ## Why this stack
 
@@ -31,13 +36,13 @@ The inference code (`churn/`) has no Streamlit dependency, so the same model can
 ## How it is built
 
 ```
-app.py                 entry point (top navigation)
+app.py                 entry point (console bar and status line, native navigation hidden)
 nav.py                 page registry
 views/                 one module per page
 churn/schema.py        pydantic customer schema, labels, upload validation
 churn/model.py         loads the pipeline, scores, explains (SHAP), risk bands
 churn/actions.py       retention playbook: drivers -> actions
-lib/                   UI kit, charts, theme, cached loaders, links
+scope/                 console UI kit (modules, readouts, strips, signals), radar and other charts, theme, loaders, links
 model/                 bank_churn_xgb.joblib + metadata.json (threshold, metrics, versions)
 data/                  held-out test customers with scores, reference statistics
 train.py               rebuilds model/ and data/ from the raw CSV

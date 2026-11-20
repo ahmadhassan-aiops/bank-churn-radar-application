@@ -10,7 +10,7 @@ from sklearn.metrics import average_precision_score, precision_score, recall_sco
 from churn import actions
 from churn.model import ChurnModel, to_logit
 from churn.schema import INPUT_COLUMNS, MODEL_COLUMNS, Customer, validate_rows
-from lib.data import DATA
+from scope.data import DATA
 
 TYPICAL = dict(
     Customer_Age=46, Gender="F", Dependent_count=2, Education_Level="Graduate", Marital_Status="Married",
