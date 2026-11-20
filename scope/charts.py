@@ -1,4 +1,4 @@
-"""Plotly figures in the console style: white scope backgrounds, teal rings, recessive grids, mono numbers.
+"""Plotly figures in the console style: white scope backgrounds, green rings, recessive grids, mono numbers.
 
 The radar scope places every customer by two facts: distance from the centre is the churn risk (the centre is
 certain churn; the call zone is the inner disc inside the threshold ring) and bearing, clockwise from north, is the

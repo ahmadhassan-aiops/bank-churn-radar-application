@@ -1,4 +1,4 @@
-"""Churn Radar components: a light air-traffic-control console. Modules (bordered panels) carry teal corner brackets
+"""Churn Radar components: a light air-traffic-control console. Modules (bordered panels) carry green corner brackets
 and a header with a status LED and a mono module code; readouts are instrument tiles; customers are flight-strip style
 strips; signals are diverging bars around a centre line; actions are numbered instructions."""
 
@@ -24,14 +24,14 @@ CSS = f"""
          --head:{t.HEAD}; --body:{t.BODY}; --mono:{t.MONO}; }}
 html, body, [data-testid="stAppViewContainer"] {{ font-family: var(--body); color: var(--ink); }}
 [data-testid="stAppViewContainer"], [data-testid="stMain"] {{ background: var(--bg); }}
-[data-testid="stAppViewContainer"] {{ background-image: radial-gradient(rgba(14,124,102,.07) 1px, transparent 1px);
+[data-testid="stAppViewContainer"] {{ background-image: radial-gradient(rgba(46,125,50,.07) 1px, transparent 1px);
     background-size: 22px 22px; }}
 .block-container {{ padding-top: 1.2rem; max-width: 1260px; }}
 header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .msr {{ font-family: 'Material Symbols Rounded'; font-weight: normal; font-style: normal; line-height: 1; display: inline-block;
         -webkit-font-feature-settings: 'liga'; font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }}
 
-/* Modules: white, thin border, teal corner brackets */
+/* Modules: white, thin border, green corner brackets */
 [data-testid="stVerticalBlockBorderWrapper"] {{ border: 1px solid var(--line) !important; border-radius: 2px !important;
     background: {BRACKETS}, var(--panel) !important; }}
 
@@ -203,7 +203,7 @@ def lock(p: float, band: str, text: str, rungs: list[tuple[str, str]], facts: li
 
 
 def signals(rows: list[dict]) -> None:
-    """rows: name, value, typical, shap. Bars scaled to the strongest; red right raises, teal left lowers."""
+    """rows: name, value, typical, shap. Bars scaled to the strongest; red right raises, green left lowers."""
     top = max([abs(r["shap"]) for r in rows] + [1e-9])
     out = ['<div class="sig-key"><span></span><div><span>&larr; lowers risk</span><span>raises risk &rarr;</span></div></div>']
     for r in rows:
