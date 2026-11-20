@@ -32,7 +32,7 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
         -webkit-font-feature-settings: 'liga'; font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }}
 
 /* Modules: white, thin border, green corner brackets */
-[data-testid="stVerticalBlockBorderWrapper"] {{ border: 1px solid var(--line) !important; border-radius: 2px !important;
+[data-testid="stVerticalBlock"][data-test-scroll-behavior] {{ border: 1px solid var(--line) !important; border-radius: 2px !important;
     background: {BRACKETS}, var(--panel) !important; }}
 
 /* Console bar */
