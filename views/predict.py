@@ -115,7 +115,8 @@ def render() -> None:
     b[0].button("Typical customer", icon=":material/person:", on_click=_load, args=(DEFAULTS,), width="stretch")
     b[1].button("At-risk example", icon=":material/warning:", on_click=_load_example, args=("risk",), width="stretch")
     b[2].button("Loyal example", icon=":material/verified:", on_click=_load_example, args=("loyal",), width="stretch")
-    b[3].button("Random held-out customer", icon=":material/casino:", on_click=_load_example, args=("random",), width="stretch")
+    b[3].button("Random customer", icon=":material/casino:", help="Load a random customer from the held-out set",
+                on_click=_load_example, args=("random",), width="stretch")
     if note := st.session_state.get("example_note"):
         ui.cap(note)
 
